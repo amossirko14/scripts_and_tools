@@ -1,8 +1,19 @@
 #!/bin/bash
 
+###################################################################################
+#This script is a demo for loading mysql data into redis singleton/shardings,
+#with each table's row mapping to redis's hash, row's primary key to the hash key
+#
+#There's a possibility that one wants to load mysql data into redis cluster rather
+#than into redis singleton/shardings, if so, based on this script, one might just
+#go one step further to achieve this: loading the data from the singleton/shardings
+#to the cluster by using tools like: github.com/vipshop/redis-migrate-tool.
+###################################################################################
+
+
 list_ip=(127.0.0.1 127.0.0.1 127.0.0.1 127.0.0.1)
 list_port=(6400 6401 6402 6403 6404)
-list_dbname=(7  7  7  7  7 )
+list_db_name=(7  7  7  7  7 )
 
 arr_len=${#list_ip[@]}
 
@@ -14,7 +25,11 @@ cur_max=2147483647 #2**31 -1
 #caution! this should be placed before where the sql_loader() function executes
 for((index=0;index<$arr_len;++index))
 do
-	echo "flushall" | redis-cli  -h ${list_ip[$index]} -p ${list_port[$index]}
+    # caution when executing flushall
+	# echo "flushall" | redis-cli  -h ${list_ip[$index]} -p ${list_port[$index]}
+
+	#fix the error: MISCONF Redis is configured to save RDB snapshots, but is currently not able to persist on disk.
+	#               Commands that may modify the data set are disabled. Please check Redis logs for details about the error.
 	echo "config set stop-writes-on-bgsave-error no" | redis-cli  -h ${list_ip[$index]} -p ${list_port[$index]}
 done
 
@@ -43,7 +58,7 @@ function sql_loader()
 			sql_total=${p5}${cond}
 
 			echo $sql_total > $SQL_NAME
-			mysql -hmysqlip -uroot -pyourpass $p2 --skip-column-names --raw < $SQL_NAME | redis-cli  -h ${list_ip[$modval]} -p ${list_port[$modval]} -n ${list_dbname[$modval]}  --pipe
+			mysql -hmysqlip -uroot -pyourpass $p2 --skip-column-names --raw < $SQL_NAME | redis-cli  -h ${list_ip[$modval]} -p ${list_port[$modval]} -n ${list_db_name[$modval]}  --pipe
 			rm -f $SQL_NAME
 			#usleep 200000
 		done

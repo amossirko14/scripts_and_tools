@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+this script, together with go_fnv1a32.go, is just for checking
+the computing fnvhash results by different languages.
+"""
+
 import os
 
 import fnvhash

@@ -6,6 +6,9 @@ import (
 	"os"
 )
 
+//this program, together with check_fnvhash.py, is just for checking
+//the computing fnvhash results by different languages.
+
 // default offset32 = 2166136261
 func HashValue(key string) uint32 {
 	h := fnv.New32a()
