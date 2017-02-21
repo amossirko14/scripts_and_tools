@@ -1,5 +1,15 @@
 #!/bin/bash
 
+
+###################################################################################
+# This script is a demo for selectively loading mysql data from one table to another
+# table with changes like column names and character set by using two SQL commands:
+# (1)select ... into outfile... (2)load data infile ... into table ...
+# Attention should be paid to (1)select-into-outfile folder permission and
+# (2)load-data-infile permission when loading from one host to another
+###################################################################################
+
+
 #commonfields
 dbnum=500
 curlimit=0
