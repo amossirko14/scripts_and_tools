@@ -8,11 +8,13 @@ import MySQLdb
 
 from fnvhash import fnv1a_32
 
-# 1. execute select mysql's date into tmp files
-# 2. read these files, and re-sort these files using fnv1a_32 and save them into redis's mass insert format
-# 3. feed the generated files in step 2 to redis-cli with --pipe
-
-__author__ = "slong.guo"
+"""
+this script is used for selectively loading data from mysql to redis shardings.
+the major steps are:
+1. select mysql's data into tmp files
+2. read these files, and re-sort these files using fnv1a_32 and save them into redis's mass insert format
+3. feed the generated files in step 2 to redis-cli with --pipe
+"""
 
 # configs
 redis_conf = (("127.0.0.1", "6400", "0"), ("127.0.0.1", "6401", "0"), ("127.0.0.1", "6402", "0"),)
